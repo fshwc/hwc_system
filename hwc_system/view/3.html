@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    :root {
+        --main-color: #ccc;
+    }
+    p {
+        color: var(--main-color);
+    }
+    .red {
+        --main-color: red;
+    }
+    </style>
+</head>
+<body>
+    <div>
+        <p>ertwecvbnfghrg</p>
+        
+    </div>
+    <div class="red">
+        <p>ertwerg</p>
+        
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+   window.onbeforeunload = function() {
+    $.ajax({url: 'http://127.0.0.1:8000/33333333onbeforeunload'})
+   }
+   window.onload = function() {
+    $.ajax({url: 'http://127.0.0.1:8000/33333333onload'})
+   }
+   window.onpageshow = function() {
+    $.ajax({url: 'http://127.0.0.1:8000/33333333onpageshow'})
+   }
+   window.onpagehide = function() {
+    $.ajax({url: 'http://127.0.0.1:8000/33333333onpagehide'})
+   }
+
+   window.addEventListener('pushstate', function(event) {
+    console.log('pushState')
+   })
+
+   window.addEventListener('hashchange', function(event) {
+    console.log('hashchange')
+   })
+
+let _wdr = function(type) {
+  let orig = window.history[type]
+  return function() {
+    let rv = orig.apply(this, arguments)
+    let e = new Event(type.toLowerCase())
+    e.arguments = arguments;
+    window.dispatchEvent(e)
+    return rv
+  }
+}
+
+let _wr =  function (type) {  
+  let orig = window.history[type]
+  return  function () {
+    let rv = orig.apply(this, arguments)
+    let e = new Event(type.toLowerCase())
+    e.arguments = arguments
+    window.dispatchEvent(e)
+    return rv
+  }
+}
+</script>
+</html>
