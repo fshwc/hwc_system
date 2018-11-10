@@ -22,6 +22,15 @@ function applyController(fnPath, req, res, ...args) {
 	if(fn) fn(req, res, ...args);
 }
 
+function checkPerm(perm, cb) => {
+	if(perm) {
+		//检查是否通过权限，通过才执行cb
+		cb(true)
+		//缺少权限
+		//cb(null)
+	}
+}
+
 if(view && view.length) {
 	view.forEach(m => {
 		router.get(m.path, (req, res) => {
@@ -34,7 +43,18 @@ if(view && view.length) {
 if(apis && apis.length) {
 	apis.forEach(m => {
 		router[m.method](m.path, (req, res) => {
-			applyController(m.controller, req, res)
+			if(m.perm) {
+				checkPerm(m.perm, (hasPerm) => {
+					if(hasPerm) {
+						applyController(m.controller, req, res)
+					}else {
+						res.json({error: {msg: '缺少权限'}})
+					}
+				})
+				
+			}else {
+				applyController(m.controller, req, res)
+			}
 		})
 	})
 }
